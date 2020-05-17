@@ -12,18 +12,18 @@ export async function getAllUsers() : Promise<User[]> {
             FROM users
             INNER JOIN roles ON users.role_id = roles.id;
             `
+        );
+        return result.rows.map((u) => {
+            return new User(
+                u.id, 
+                u.username, 
+                u.password, 
+                u.first_name, 
+                u.last_name, 
+                u.email, 
+                new Role(u.role_id, u.role_name)
             );
-            return result.rows.map((u) => {
-                return new User(
-                    u.id, 
-                    u.username, 
-                    u.password, 
-                    u.first_name, 
-                    u.last_name, 
-                    u.email, 
-                    new Role(u.role_id, u.role_name)
-                );
-            });
+        });
     } catch (error) {
         throw new Error(`Failed to query for all users: ${error.message}`);
     } finally {
@@ -57,4 +57,8 @@ export async function getUserById(id : number) : Promise<User[]> {
     } finally {
         client && client.release();
     }
+}
+
+export async function updateUser() {
+    
 }

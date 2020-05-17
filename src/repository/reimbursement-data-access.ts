@@ -2,9 +2,10 @@ import { Reimbursement } from '../models/Reimbursement';
 import { PoolClient, QueryResult } from 'pg';
 import { connectionPool } from '.';
 
+const rems : string = 'reimbursements';
+
 export async function getAllReimbursements() : Promise<Reimbursement[]> {
     let client : PoolClient = await connectionPool.connect();
-    const rems : String = 'reimbursements';
     try {
         let result : QueryResult = await client.query(`
             SELECT ${rems}.id, ${rems}.author, ${rems}.amount, ${rems}.date_submitted, ${rems}.date_resolved, 
@@ -26,6 +27,34 @@ export async function getAllReimbursements() : Promise<Reimbursement[]> {
         });
     } catch (error) {
         throw new Error(`Failed to query for all Reimbursements: ${error.message}`)
+    } finally {
+        client && client.release();
+    }
+}
+
+export async function getReimbursementsByStatusId(id : number) : Promise<Reimbursement[]> {
+    let client : PoolClient = await connectionPool.connect();
+    try {
+        let result : QueryResult = await client.query(`
+            SELECT *
+            FROM ${rems}
+            WHERE ${rems}.id = $1;
+        `, [id]);
+        return result.rows.map((r) => {
+            return new Reimbursement(
+                r.id,
+                r.author,
+                r.amount,
+                r.date_submitted,
+                r.date_resolved,
+                r.description,
+                r.resolver,
+                r.status,
+                r.reimbursement_type
+            );
+        });
+    } catch (error) {
+        throw new Error(`Failed to query for reimbursement by id: ${error.message}`);
     } finally {
         client && client.release();
     }
