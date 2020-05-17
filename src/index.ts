@@ -5,6 +5,7 @@ import { sessionMiddleware } from './middleware/sessionMiddleware';
 import { connectionPool } from './repository';
 import { PoolClient, QueryResult } from 'pg';
 import { userRouter } from './routers/userRouter';
+import { reimbursementRouter } from './routers/reimbursementRouter';
 
 const app: Application = express();
 
@@ -14,6 +15,7 @@ app.use(sessionMiddleware);
 
 // ENDPOINTS
 app.use('/users', userRouter);
+app.use('/reimbursements', reimbursementRouter);
 
 app.post('/login', (req: Request, res: Response) => {
 
