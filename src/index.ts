@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { sessionMiddleware } from './middleware/sessionMiddleware';
 import { connectionPool } from './repository';
 import { PoolClient, QueryResult } from 'pg';
+import { userRouter } from './routers/userRouter';
 
 const app: Application = express();
 
@@ -12,14 +13,12 @@ app.use(bodyParser.json());
 app.use(sessionMiddleware);
 
 // ENDPOINTS
+app.use('/users', userRouter);
 
 app.post('/login', (req: Request, res: Response) => {
 
 });
 
-app.get('/users', (req: Request, res: Response) => {
-
-})
 
 // OPEN PORT
 app.listen(3000, () => {
@@ -29,7 +28,7 @@ app.listen(3000, () => {
     connectionPool.connect().then((client: PoolClient) => {
         console.log('connected to database');
         client.query('SELECT * FROM reimbursements;').then((result: QueryResult) => {
-            console.log(result.rows);
+            console.log(result.rows[0]);
         }).catch((err) => {
             console.log(err.message);
             
