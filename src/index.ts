@@ -18,7 +18,8 @@ app.use('/users', userRouter);
 app.use('/reimbursements', reimbursementRouter);
 
 app.post('/login', (req: Request, res: Response) => {
-
+    console.log("You're logged in");
+    // res.json("You're logged in").
 });
 
 
