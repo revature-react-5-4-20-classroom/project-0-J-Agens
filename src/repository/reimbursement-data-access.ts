@@ -32,14 +32,14 @@ export async function getAllReimbursements() : Promise<Reimbursement[]> {
     }
 }
 
-export async function getReimbursementsByStatusId(id : number) : Promise<Reimbursement[]> {
+export async function getReimbursementsByStatusId(statusId : number) : Promise<Reimbursement[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
         let result : QueryResult = await client.query(`
             SELECT *
             FROM ${rems}
-            WHERE ${rems}.id = $1;
-        `, [id]);
+            WHERE ${rems}.status = $1;
+        `, [statusId]);
         return result.rows.map((r) => {
             return new Reimbursement(
                 r.id,
