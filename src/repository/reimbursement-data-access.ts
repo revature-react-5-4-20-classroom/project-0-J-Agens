@@ -7,11 +7,19 @@ const rems : string = 'reimbursements';
 export async function getAllReimbursements() : Promise<Reimbursement[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
+        // Sorted by most recent first
         let result : QueryResult = await client.query(`
-            SELECT ${rems}.id, ${rems}.author, ${rems}.amount, ${rems}.date_submitted, ${rems}.date_resolved, 
-            ${rems}.description, ${rems}.resolver, ${rems}.status, ${rems}.reimbursement_type
+            SELECT ${rems}.id, 
+            ${rems}.author, 
+            ${rems}.amount, 
+            ${rems}.date_submitted, 
+            ${rems}.date_resolved, 
+            ${rems}.description, 
+            ${rems}.resolver, 
+            ${rems}.status, 
+            ${rems}.reimbursement_type
             FROM reimbursements
-            ORDER BY ${rems}.date_submitted;
+            ORDER BY ${rems}.date_submitted DESC;
         `);
         return result.rows.map((r) => {
             return new Reimbursement(
@@ -36,11 +44,12 @@ export async function getAllReimbursements() : Promise<Reimbursement[]> {
 export async function getReimbursementsByStatusId(statusId : number) : Promise<Reimbursement[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
+        // Sorted by most recent first
         let result : QueryResult = await client.query(`
             SELECT *
             FROM ${rems}
             WHERE ${rems}.status = $1
-            ORDER BY ${rems}.date_submitted;
+            ORDER BY ${rems}.date_submitted DESC;
         `, [statusId]);
         return result.rows.map((r) => {
             return new Reimbursement(
@@ -65,11 +74,12 @@ export async function getReimbursementsByStatusId(statusId : number) : Promise<R
 export async function getReimbursementsByAuthor(authorId : number) : Promise<Reimbursement[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
+        // Sorted by most recent first
         let result : QueryResult = await client.query(`
             SELECT *
             FROM ${rems}
             WHERE ${rems}.author = $1
-            ORDER BY ${rems}.date_submitted;
+            ORDER BY ${rems}.date_submitted DESC;
         `, [authorId]);
         return result.rows.map((r) => {
             return new Reimbursement(
@@ -128,6 +138,15 @@ export async function addReimbursement(rem : Reimbursement) : Promise<Reimbursem
         return newRem;
     } catch (error) {
         throw new Error(`Failed to add a new reimbursement: ${error.message}`);
+    } finally {
+        client && client.release();
+    }
+}
+
+export async function updateReimbursement(rem : Reimbursement) : Promise<Reimbursement> {
+    let client : PoolClient = await connectionPool.connect();
+    try {
+        return rem
     } finally {
         client && client.release();
     }

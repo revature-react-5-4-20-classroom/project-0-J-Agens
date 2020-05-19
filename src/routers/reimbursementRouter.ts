@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import { Reimbursement } from '../models/Reimbursement';
-import { getAllReimbursements, getReimbursementsByStatusId, getReimbursementsByAuthor, addReimbursement } from '../repository/reimbursement-data-access';
+import { getAllReimbursements, getReimbursementsByStatusId, getReimbursementsByAuthor, addReimbursement, updateReimbursement } from '../repository/reimbursement-data-access';
 
 export const reimbursementRouter : Router = express.Router();
 
@@ -36,9 +36,53 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
    
    let {author, amount, dateSubmitted, description, type} = req.body;
    if (author && amount && description && type) {
-       await addReimbursement(new Reimbursement(0, author, amount, dateSubmitted, 0, description, 0, 1, type));
-       res.sendStatus(201);
+       const newRemb : Reimbursement = await addReimbursement(new Reimbursement(0, author, amount, dateSubmitted, 0, description, 0, 1, type));
+       res.status(201);
+       res.json(newRemb);
    } else {
        res.status(400).send('Please include the required fields');
    }
+});
+
+reimbursementRouter.patch('/', async (req : Request, res : Response) => {
+    // reimbursementId: number;
+    // author: number;
+    // amount: number;
+    // dateSubmitted: number | string; // string for input
+    // dateResolved?: number;
+    // description: string;
+    // resolver?: number; // foreign key
+    // status: number; // foreign key
+    // type?: number; // foreign key
+
+    let {
+        reimbursementId,
+        author,
+        amount,
+        dateSubmitted,
+        dateResolved,
+        description,
+        resolver,
+        status,
+        type
+    } = req.body;
+
+    if (reimbursementId) {
+        await updateReimbursement(new Reimbursement(
+            reimbursementId,
+            author,
+            amount,
+            dateSubmitted,
+            dateResolved,
+            description,
+            resolver,
+            status,
+            type
+        ));
+    } else {
+        
+    }
+
+    res.json({hello: "there"})
+
 });
