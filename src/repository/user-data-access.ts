@@ -7,11 +7,16 @@ export async function getAllUsers() : Promise<User[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
         let result : QueryResult = await client.query(
-            `SELECT users.id, users.username, users.password, users.first_name, users.last_name, users.email, 
-            roles.id AS role_id, roles.role_name
+            `SELECT users.id, 
+                users.username, 
+                users.password, 
+                users.first_name, 
+                users.last_name, 
+                users.email, 
+                roles.id AS role_id, 
+                roles.role_name
             FROM users
-            INNER JOIN roles ON users.role_id = roles.id;
-            `
+            INNER JOIN roles ON users.role_id = roles.id;`
         );
         return result.rows.map((u) => {
             return new User(
@@ -35,8 +40,14 @@ export async function getUserById(id : number) : Promise<User[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
         let result : QueryResult = await client.query(`
-            SELECT users.id, users.username, users.password, users.first_name, users.last_name, users.email, 
-            roles.id AS role_id, roles.role_name
+            SELECT users.id, 
+                users.username, 
+                users.password, 
+                users.first_name, 
+                users.last_name, 
+                users.email, 
+                roles.id AS role_id, 
+                roles.role_name
             FROM users
             INNER JOIN roles ON users.role_id = roles.id
             WHERE users.id = $1;

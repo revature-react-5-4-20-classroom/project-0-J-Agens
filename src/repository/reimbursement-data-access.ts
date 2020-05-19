@@ -112,7 +112,7 @@ export async function addReimbursement(rem : Reimbursement) : Promise<Reimbursem
             LIMIT 1;
         `);
 
-        const newRem = result.rows.map((r) => {
+        const newRem : Reimbursement = result.rows.map((r) => {
             return new Reimbursement(
                 r.id, 
                 r.author, 

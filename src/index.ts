@@ -61,7 +61,7 @@ app.listen(3000, () => {
     connectionPool.connect().then((client: PoolClient) => {
         console.log('connected to database');
         client.query('SELECT * FROM reimbursements;').then((result: QueryResult) => {
-            console.log(result.rows[0]);
+            console.log('Test query => ', result.rows[0]);
         }).catch((err) => {
             console.log(err.message);
             
