@@ -115,6 +115,7 @@ export async function updateUser(user : User) : Promise<User> {
             updatedUser.email
         ]);
 
+        // Requery for new user info
         const updatedUserResult : QueryResult = await client.query(`
             SELECT *
             FROM users

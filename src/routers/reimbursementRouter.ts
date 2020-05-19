@@ -21,3 +21,7 @@ reimbursementRouter.get('/author/userId/:authorId', async (req : Request, res : 
     const reimbursements : Reimbursement[] = await getReimbursementsByAuthor(id);
     res.json(reimbursements);
 })
+
+reimbursementRouter.post('/reimbursements',/*async*/ (req : Request, res : Response) => {
+    // Coming soon
+});
