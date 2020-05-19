@@ -56,7 +56,7 @@ reimbursementRouter.patch('/', async (req : Request, res : Response) => {
             "reimbursementId": number,
             "author": number,
             "amount": number,
-            "dateSubmitted": "DD/MM/YYYY,
+            "dateSubmitted": "DD/MM/YYYY",
             "dateResolved": "DD/MM/YYYY",
             "description": string,
             "resolver": number,

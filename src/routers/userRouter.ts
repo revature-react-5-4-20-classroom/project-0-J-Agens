@@ -6,7 +6,7 @@ import { authRoleFactory } from '../middleware/authMiddleware';
 export const userRouter : Router = express.Router();
 
 // finance managers can view all users and individual users by id
-userRouter.use(authRoleFactory(['finance manager']));
+// userRouter.use(authRoleFactory(['finance manager']));
 
 userRouter.get('/', async (req: Request, res : Response) => {
     const users : User[] = await getAllUsers();
@@ -24,7 +24,7 @@ userRouter.get('/:id', async (req : Request, res : Response) => {
 });
 
 // admins can edit users
-userRouter.use(authRoleFactory(['admin']));
+// userRouter.use(authRoleFactory(['admin']));
 
 userRouter.patch('/', async (req : Request, res : Response) => {
     let {userId, username, password, firstName, lastName, email, role} = req.body;
