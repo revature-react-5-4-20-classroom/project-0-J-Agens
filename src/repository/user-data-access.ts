@@ -143,3 +143,37 @@ export async function updateUser(user : User) : Promise<User> {
         client && client.release();
     }
 }
+
+// Return a user to attach to the session or send appropriate response
+export async function findUserByUsernamePassword(uname : string, pword : string) : Promise<User> {
+    const client : PoolClient = await connectionPool.connect();
+    try {
+        const result : QueryResult = await client.query(`
+            SELECT *, roles.id AS role_id_num, users.id AS user_id_num
+            FROM users
+            INNER JOIN roles ON users.role_id = roles.id
+            WHERE username = $1 AND password = $2;
+        `,[uname, pword]);
+
+        const matchingUsers : User[] = result.rows.map(u => new User(
+            u.user_id_num,
+            u.username,
+            u.password,
+            u.first_name,
+            u.last_name,
+            u.email,
+            (new Role(u.role_id_num, u.role_name))
+        ));
+
+        if (matchingUsers.length > 0) {
+            return matchingUsers[0];
+        } else {
+            throw new Error('Username and password not matched to valid user.');
+        }
+        
+    } catch (error) {
+        throw new Error(`Could not successfully retrieve user by username and password: ${error.message}`);
+    } finally {
+        client && client.release();
+    }
+}

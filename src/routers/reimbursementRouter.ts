@@ -1,26 +1,11 @@
 import express, { Router, Request, Response } from 'express';
 import { Reimbursement } from '../models/Reimbursement';
 import { getAllReimbursements, getReimbursementsByStatusId, getReimbursementsByAuthor, addReimbursement, updateReimbursement } from '../repository/reimbursement-data-access';
+import { authRoleFactory } from '../middleware/authMiddleware';
 
 export const reimbursementRouter : Router = express.Router();
 
-reimbursementRouter.get('/', async (req : Request, res : Response) => {
-    const reimbursements : Reimbursement[] = await getAllReimbursements();
-    res.json(reimbursements);
-});
-
-reimbursementRouter.get('/status/:id', async (req : Request, res : Response) => {
-    const id = +req.params.id;
-    const reimbursement : Reimbursement[] = await getReimbursementsByStatusId(id);
-    res.json(reimbursement);
-    
-});
-
-reimbursementRouter.get('/author/userId/:authorId', async (req : Request, res : Response) => {
-    const id = +req.params.authorId;
-    const reimbursements : Reimbursement[] = await getReimbursementsByAuthor(id);
-    res.json(reimbursements);
-})
+reimbursementRouter.use(authRoleFactory(['employee', 'finance manager', 'admin']));
 
 reimbursementRouter.post('/', async (req : Request, res : Response) => {
     /*
@@ -43,6 +28,26 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
        res.status(400).send('Please include the required fields');
    }
 });
+
+reimbursementRouter.use(authRoleFactory(['finance manager']));
+
+reimbursementRouter.get('/', async (req : Request, res : Response) => {
+    const reimbursements : Reimbursement[] = await getAllReimbursements();
+    res.json(reimbursements);
+});
+
+reimbursementRouter.get('/status/:id', async (req : Request, res : Response) => {
+    const id = +req.params.id;
+    const reimbursement : Reimbursement[] = await getReimbursementsByStatusId(id);
+    res.json(reimbursement);
+    
+});
+
+reimbursementRouter.get('/author/userId/:authorId', async (req : Request, res : Response) => {
+    const id = +req.params.authorId;
+    const reimbursements : Reimbursement[] = await getReimbursementsByAuthor(id);
+    res.json(reimbursements);
+})
 
 reimbursementRouter.patch('/', async (req : Request, res : Response) => {
     /*
