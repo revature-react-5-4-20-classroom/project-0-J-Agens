@@ -2,12 +2,12 @@ export class Reimbursement {
     reimbursementId: number;
     author: number;
     amount: number;
-    dateSubmitted: number;
-    dateResolved: number;
+    dateSubmitted: number | string; // string for input
+    dateResolved?: number;
     description: string;
-    resolver: number; // foreign key
+    resolver?: number; // foreign key
     status: number;
-    type: number;
+    type?: number;
 
     constructor(
         reimbursementId: number,
