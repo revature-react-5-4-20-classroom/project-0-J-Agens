@@ -84,8 +84,6 @@ export async function updateUser(user : User) : Promise<User> {
         const originalRole : Role = roleResult.rows.map((r) => {
             return new Role(r.id, r.role_name);
         })[0];
-
-        console.log("originalRole", typeof originalRole);
         
         
         // Create User object which reflects new column values
