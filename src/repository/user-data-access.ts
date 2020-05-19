@@ -69,43 +69,60 @@ export async function updateUser(user : User) : Promise<User> {
             WHERE id = $1;
         `,[user.userId]);
 
-        // Accept a role object with just a role field as input
+        
         // Grab the right role_id from the database
+        const roleKey : number = findUserResult.rows[0].role_id;
         let roleResult : QueryResult = await client.query(`
             SELECT *
             FROM roles 
-            WHERE roles.role_name = $1
-        `,[user.role.role]);
+            WHERE roles.id = $1
+        `,[roleKey]);
+        console.log("roleResult", roleResult);
+        
 
-        // Generate a Role object to be inserted into the updated User object.
+        // Generate a Role object based on previously saved role type
         const originalRole : Role = roleResult.rows.map((r) => {
             return new Role(r.id, r.role_name);
         })[0];
+
+        console.log("originalRole", typeof originalRole);
         
-        // Create User object which mirrors the row as it exists in the database
-        // Can be used in a later refactor, not implemented yet.
-        let updateableUser : User = findUserResult.rows.map((u) => {
+        
+        // Create User object which reflects new column values
+        let updatedUser : User = findUserResult.rows.map((u) => {
             return new User(
                 u.id,
-                u.username,
-                u.password,
-                u.first_name,
-                u.last_name,
-                u.email,
-                originalRole
+                (user.username || u.username),
+                (user.password || u.password),
+                (user.firstName || u.first_name),
+                (user.lastName || u.last_name),
+                (user.email || u.email),
+                (user.role || originalRole) // only accepts legitmate Role(ish) objects
             );
         })[0];
-
-
-        // UPDATE Query
+        
+        // UPDATE Query to edit those values
         let updateUserResult : QueryResult = await client.query(`
             UPDATE users
-            SET username = $1, password = $2, first_name = $3, last_name = $4, email = $5
-            WHERE id = $6;
-        `,[user.username, user.password, user.firstName, user.lastName, user.email, user.userId]);
+            SET username = $2, password = $3, first_name = $4, last_name = $5, email = $6
+            WHERE id = $1;
+        `,[
+            updatedUser.userId, 
+            updatedUser.username, 
+            updatedUser.password, 
+            updatedUser.firstName, 
+            updatedUser.lastName, 
+            updatedUser.email
+        ]);
+
+        const updatedUserResult : QueryResult = await client.query(`
+            SELECT *
+            FROM users
+            WHERE id = $1;
+        `,[user.userId]);
 
         // Create a User Object to return
-        let finalUserObject : User = updateUserResult.rows.map((u) => {
+        let finalUserObject : User = updatedUserResult.rows.map((u) => {
             return new User(
                 u.id,
                 u.username,
@@ -113,10 +130,10 @@ export async function updateUser(user : User) : Promise<User> {
                 u.first_name,
                 u.last_name,
                 u.email,
-                originalRole
+                (user.role || originalRole)
             );
         })[0];
-
+        // Return the edited User
         return finalUserObject;
     } catch (error) {
         throw new Error(`Failed to update user: ${error.message}`);
