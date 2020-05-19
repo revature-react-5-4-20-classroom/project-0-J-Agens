@@ -6,12 +6,14 @@ import { connectionPool } from './repository';
 import { PoolClient, QueryResult } from 'pg';
 import { userRouter } from './routers/userRouter';
 import { reimbursementRouter } from './routers/reimbursementRouter';
+import { loggingMiddleware } from './middleware/loggingMiddleware';
 
 const app: Application = express();
 
 app.use(bodyParser.json());
 
 app.use(sessionMiddleware);
+app.use(loggingMiddleware);
 
 // ENDPOINTS
 app.use('/users', userRouter);
