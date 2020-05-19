@@ -94,15 +94,6 @@ export async function getReimbursementsByAuthor(authorId : number) : Promise<Rei
 export async function addReimbursement(rem : Reimbursement) : Promise<Reimbursement> {
     let client : PoolClient = await connectionPool.connect();
     try {
-        // 0 reimbursementId: number;
-        // 1 author: number;
-        // 2 amount: number;
-        // 3 dateSubmitted: number;
-        // 0 dateResolved: number;
-        // 4 description: string;
-        // 0 resolver: number; // foreign key
-        // 0 status: number;
-        // 5 type: number;
         let insertRembResult : QueryResult = await client.query(`
             INSERT INTO reimbursements
             VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD/MM/YYYY'), NULL, $4, NULL, 1, $5);

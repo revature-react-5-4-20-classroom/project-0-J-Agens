@@ -7,7 +7,7 @@ export class User {
     firstName?: string;
     lastName?: string;
     email?: string;
-    role?: Role; // Double check that this shouldn't be a foreign key instead.
+    role?: Role;
 
     constructor(userId: number, username?: string, password?: string, firstName?: string, lastName?: string, email?: string, role?: Role) {
         this.userId = userId;

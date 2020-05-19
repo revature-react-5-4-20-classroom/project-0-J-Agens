@@ -33,7 +33,6 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
         "type": number
     }
     */
-   console.log('POST to /rems hit');
    
    let {author, amount, dateSubmitted, description, type} = req.body;
    if (author && amount && description && type) {

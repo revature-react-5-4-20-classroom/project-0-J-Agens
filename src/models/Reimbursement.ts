@@ -5,7 +5,7 @@ export class Reimbursement {
     dateSubmitted: number | string; // string for input
     dateResolved?: number;
     description: string;
-    resolver?: number; // foreign key
+    resolver?: number; 
     status: number;
     type?: number;
 
