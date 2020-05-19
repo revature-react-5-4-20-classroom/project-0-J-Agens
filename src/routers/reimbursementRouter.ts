@@ -45,15 +45,20 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
 });
 
 reimbursementRouter.patch('/', async (req : Request, res : Response) => {
-    // reimbursementId: number;
-    // author: number;
-    // amount: number;
-    // dateSubmitted: number | string; // string for input
-    // dateResolved?: number;
-    // description: string;
-    // resolver?: number; // foreign key
-    // status: number; // foreign key
-    // type?: number; // foreign key
+    /*
+    Input format: (only reimbursementId is required)
+        {
+            "reimbursementId": number,
+            "author": number,
+            "amount": number,
+            "dateSubmitted": "DD/MM/YYYY,
+            "dateResolved": "DD/MM/YYYY",
+            "description": string,
+            "resolver": number,
+            "status": number,
+            "type": number
+        }
+    */
 
     let {
         reimbursementId,
@@ -68,7 +73,7 @@ reimbursementRouter.patch('/', async (req : Request, res : Response) => {
     } = req.body;
 
     if (reimbursementId) {
-        await updateReimbursement(new Reimbursement(
+        const remb = await updateReimbursement(new Reimbursement(
             reimbursementId,
             author,
             amount,
@@ -79,10 +84,10 @@ reimbursementRouter.patch('/', async (req : Request, res : Response) => {
             status,
             type
         ));
+        res.status(200);
+        res.json(remb);
     } else {
-        
+        res.status(400).send('Failed to update reimbursement');
     }
-
-    res.json({hello: "there"})
 
 });

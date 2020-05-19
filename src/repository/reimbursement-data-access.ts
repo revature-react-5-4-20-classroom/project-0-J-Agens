@@ -132,7 +132,7 @@ export async function addReimbursement(rem : Reimbursement) : Promise<Reimbursem
                 r.description, 
                 (r.resolver || 0), 
                 r.status, 
-                r.type
+                r.reimbursement_type
             );
         })[0];
         return newRem;
@@ -146,7 +146,53 @@ export async function addReimbursement(rem : Reimbursement) : Promise<Reimbursem
 export async function updateReimbursement(rem : Reimbursement) : Promise<Reimbursement> {
     let client : PoolClient = await connectionPool.connect();
     try {
-        return rem
+        // Grab the right reimbursement row by the remimbursementId
+        const rembResult : QueryResult = await client.query(`
+            SELECT *
+            FROM reimbursements
+            WHERE id = $1;
+        `,[rem.reimbursementId]);
+
+        const newRem : Reimbursement = rembResult.rows.map(r => new Reimbursement(
+            r.id, 
+            r.author, // Cannot change author
+            (rem.amount || r.amount), 
+            r.date_submitted, // Cannot change date_submitted
+            (rem.dateResolved || r.date_resolved), 
+            (rem.description || r.description), 
+            (rem.resolver || r.resolver), 
+            (rem.status || r.status), 
+            (rem.type || r.reimbursement_type)
+        ))[0];
+        
+        const updateRembResult : QueryResult = await client.query(`
+            UPDATE reimbursements
+            SET amount = $2, 
+                date_resolved = TO_DATE($3, 'DD/MM/YYYY'),
+                description = $4,
+                resolver = $5,
+                status = $6,
+                reimbursement_type = $7
+            WHERE id = $1;
+        `,[
+            newRem.reimbursementId,
+            newRem.amount,
+            newRem.dateResolved,
+            newRem.description,
+            newRem.resolver,
+            newRem.status,
+            newRem.type
+        ]);
+
+        const newRembResult : QueryResult = await client.query(`
+            SELECT *
+            FROM reimbursements
+            WHERE id = $1;
+        `,[rem.reimbursementId]);
+
+        return newRem;
+    } catch(error) {
+        throw new Error(`Failed to update reimbursement ${rem.reimbursementId}: ${error.message}`);
     } finally {
         client && client.release();
     }

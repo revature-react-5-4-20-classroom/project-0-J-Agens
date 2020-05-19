@@ -21,7 +21,6 @@ userRouter.get('/:id', async (req : Request, res : Response) => {
 
 userRouter.patch('/', async (req : Request, res : Response) => {
     let {userId, username, password, firstName, lastName, email, role} = req.body;
-    console.log(`id: ${userId}, password: ${password}, firstName: ${firstName}`);
     
     if (userId) {
         let user = await updateUser(new User(userId, username, password, firstName, lastName, email, role));

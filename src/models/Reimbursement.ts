@@ -2,8 +2,8 @@ export class Reimbursement {
     reimbursementId: number;
     author?: number;
     amount?: number;
-    dateSubmitted?: number | string; // string for input
-    dateResolved?: number;
+    dateSubmitted?: number | string; // string for POST
+    dateResolved?: number | string; // string for PATCH
     description?: string;
     resolver?: number; // foreign key
     status?: number; // foreign key 

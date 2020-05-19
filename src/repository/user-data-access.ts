@@ -89,6 +89,7 @@ export async function updateUser(user : User) : Promise<User> {
         
         
         // Create User object which reflects new column values
+        // **Should return this at the end instead of repeating the process.** //
         let updatedUser : User = findUserResult.rows.map((u) => {
             return new User(
                 u.id,
