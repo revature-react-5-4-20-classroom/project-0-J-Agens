@@ -7,7 +7,8 @@ export async function getAllUsers() : Promise<User[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
         let result : QueryResult = await client.query(
-            `SELECT users.id, 
+            // Aliases on ids to ensure nothing unexpected happens
+            `SELECT users.id AS user_id_num, 
                 users.username, 
                 users.password, 
                 users.first_name, 
@@ -20,7 +21,7 @@ export async function getAllUsers() : Promise<User[]> {
         );
         return result.rows.map((u) => {
             return new User(
-                u.id, 
+                u.user_id_num, 
                 u.username, 
                 u.password, 
                 u.first_name, 
@@ -40,7 +41,7 @@ export async function getUserById(id : number) : Promise<User[]> {
     let client : PoolClient = await connectionPool.connect();
     try {
         let result : QueryResult = await client.query(`
-            SELECT users.id, 
+            SELECT users.id AS user_id_num, 
                 users.username, 
                 users.password, 
                 users.first_name, 
@@ -54,7 +55,7 @@ export async function getUserById(id : number) : Promise<User[]> {
         `, [id]);
         return result.rows.map((u) => {
             return new User(
-                u.id, 
+                u.user_id_num, 
                 u.username, 
                 u.password, 
                 u.first_name, 
@@ -75,30 +76,24 @@ export async function updateUser(user : User) : Promise<User> {
     try {
         // Grab the right user based on supplied id
         let findUserResult : QueryResult = await client.query(`
-            SELECT *
+            SELECT *, roles.id AS role_id_num, users.id AS user_id_num
             FROM users
-            WHERE id = $1;
+            INNER JOIN roles ON users.role_id = roles.id
+            WHERE user_id_num = $1
         `,[user.userId]);
 
         
-        // Grab the right role_id from the database
-        const roleKey : number = findUserResult.rows[0].role_id;
-        let roleResult : QueryResult = await client.query(`
-            SELECT *
-            FROM roles 
-            WHERE roles.id = $1
-        `,[roleKey]);
-        console.log("roleResult", roleResult);
+        // Pick out role info
+        const roleIdNumber : number = findUserResult.rows[0].role_id;
+        const roleNameString : string = findUserResult.rows[0].role_id;
         
 
         // Generate a Role object based on previously saved role type
-        const originalRole : Role = roleResult.rows.map((r) => {
-            return new Role(r.id, r.role_name);
-        })[0];
+        const originalRole : Role = new Role(roleIdNumber, roleNameString)
         
         
         // Create User object which reflects new column values
-        // **Should return this at the end instead of repeating the process.** //
+        // **Should return this at the end instead of repeating the process.** // ==> DECIDED TO KEEP FOR NOW
         let updatedUser : User = findUserResult.rows.map((u) => {
             return new User(
                 u.id,

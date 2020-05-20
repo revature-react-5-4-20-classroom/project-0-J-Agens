@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 app.use(sessionMiddleware);
 
-// ENDPOINTS
+// Routers
 app.use('/users', userRouter);
 app.use('/reimbursements', reimbursementRouter);
 

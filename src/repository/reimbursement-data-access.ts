@@ -174,6 +174,7 @@ export async function updateReimbursement(rem : Reimbursement) : Promise<Reimbur
             newRem.type
         ]);
 
+        // Query the updated reimbursement for possible remapping if needed
         const newRembResult : QueryResult = await client.query(`
             SELECT *
             FROM reimbursements
