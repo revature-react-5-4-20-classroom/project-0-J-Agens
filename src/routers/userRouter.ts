@@ -6,7 +6,7 @@ import { authRoleFactory } from '../middleware/authMiddleware';
 export const userRouter : Router = express.Router();
 
 // finance managers can view all users and individual users by id
-userRouter.use(authRoleFactory(['finance manager']));
+userRouter.use(authRoleFactory(['finance manager', 'admin']));
 
 userRouter.get('/', async (req: Request, res : Response) => {
     const users : User[] = await getAllUsers();
