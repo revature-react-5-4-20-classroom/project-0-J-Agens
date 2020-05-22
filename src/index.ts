@@ -11,6 +11,11 @@ import { User } from './models/User';
 
 const app: Application = express();
 
+// Check if webhook works by pushing new endpoint:
+app.get('/new-endpoint', (req : Request, res : Response) => {
+    res.send('Webhooks worked!');
+})
+
 app.use(bodyParser.json());
 
 app.use(sessionMiddleware);
