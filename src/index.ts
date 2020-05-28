@@ -8,8 +8,11 @@ import { userRouter } from './routers/userRouter';
 import { reimbursementRouter } from './routers/reimbursementRouter';
 import { findUserByUsernamePassword } from './repository/user-data-access';
 import { User } from './models/User';
+import { corsFilter } from './middleware/corsFilter';
 
 const app: Application = express();
+// CORS Filter
+app.use(corsFilter) 
 
 // Check if webhook works by pushing new endpoint:
 app.get('/new-endpoint', (req : Request, res : Response) => {
