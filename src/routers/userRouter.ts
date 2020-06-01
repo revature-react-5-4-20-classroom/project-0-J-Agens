@@ -5,13 +5,7 @@ import { authRoleFactory } from '../middleware/authMiddleware';
 
 export const userRouter : Router = express.Router();
 
-// finance managers can view all users and individual users by id
-userRouter.use(authRoleFactory(['finance manager', 'admin']));
-
-userRouter.get('/', async (req: Request, res : Response) => {
-    const users : User[] = await getAllUsers();
-    res.json(users);
-});
+userRouter.use(authRoleFactory(['employee', 'finance manager', 'admin'])); // added to help with front end
 
 userRouter.get('/:id', async (req : Request, res : Response) => {
     const id = +req.params.id;
@@ -22,6 +16,26 @@ userRouter.get('/:id', async (req : Request, res : Response) => {
         res.json(user);
     }
 });
+
+
+// finance managers can view all users and individual users by id
+userRouter.use(authRoleFactory(['finance manager', 'admin']));
+
+userRouter.get('/', async (req: Request, res : Response) => {
+    const users : User[] = await getAllUsers();
+    res.json(users);
+});
+
+/* MOVED TO TOP TO ACCOMODATE FRONTEND*/
+// userRouter.get('/:id', async (req : Request, res : Response) => {
+//     const id = +req.params.id;
+//     const user : User[] = await getUserById(id);
+//     if(isNaN(id)) {
+//         res.status(400).send('Must include numeric in path');
+//     } else {
+//         res.json(user);
+//     }
+// });
 
 // admins can edit users
 userRouter.use(authRoleFactory(['admin']));
