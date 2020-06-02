@@ -20,11 +20,6 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
     */
    
    let {author, amount, dateSubmitted, description, type} = req.body;
-   // JSON comes back as a string, so converting types for author, amount, and type (06/02/2020 [project-1])
-//    author = parseInt(author);  // ==> Changed my mind... still testing.
-//    amount = parseFloat(amount);
-//    type = parseInt(type);
-    console.log(`author: ${author} | amount: ${amount} | dateSubmitted: ${dateSubmitted} | type: ${type}`);
     
 
    if (author && amount && description && type) {
