@@ -24,6 +24,8 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
 //    author = parseInt(author);  // ==> Changed my mind... still testing.
 //    amount = parseFloat(amount);
 //    type = parseInt(type);
+    console.log(`author: ${author} | amount: ${amount} | dateSubmitted: ${dateSubmitted} | type: ${type}`);
+    
 
    if (author && amount && description && type) {
        const newRemb : Reimbursement = await addReimbursement(new Reimbursement(0, author, amount, dateSubmitted, 0, description, 0, 1, type));

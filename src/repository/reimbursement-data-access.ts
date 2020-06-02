@@ -108,7 +108,7 @@ export async function addReimbursement(rem : Reimbursement) : Promise<Reimbursem
         let result : QueryResult = await client.query(`
             SELECT *
             FROM reimbursements
-            ORDER BY date_submitted DESC
+            ORDER BY id DESC
             LIMIT 1;
         `);
 
