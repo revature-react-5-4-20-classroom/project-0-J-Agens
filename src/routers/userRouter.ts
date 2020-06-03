@@ -37,8 +37,9 @@ userRouter.get('/', async (req: Request, res : Response) => {
 //     }
 // });
 
+//***  TEMPORARYILY DISABLED (06/02/2020) ***/
 // admins can edit users
-userRouter.use(authRoleFactory(['admin']));
+// userRouter.use(authRoleFactory(['admin']));
 
 userRouter.patch('/', async (req : Request, res : Response) => {
     let {userId, username, password, firstName, lastName, email, role} = req.body;
