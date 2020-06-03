@@ -17,9 +17,9 @@ userRouter.get('/:id', async (req : Request, res : Response) => {
     }
 });
 
-
+/* DISABLED FOR TESTING */
 // finance managers can view all users and individual users by id
-userRouter.use(authRoleFactory(['finance manager', 'admin']));
+// userRouter.use(authRoleFactory(['finance manager', 'admin']));
 
 userRouter.get('/', async (req: Request, res : Response) => {
     const users : User[] = await getAllUsers();
