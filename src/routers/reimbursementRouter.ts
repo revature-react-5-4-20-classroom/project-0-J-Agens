@@ -31,7 +31,8 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
    }
 });
 
-reimbursementRouter.use(authRoleFactory(['finance manager']));
+/* REMOVED AUTH FOR FRONT END TESTING (06/02/2020)*/
+// reimbursementRouter.use(authRoleFactory(['finance manager']));
 
 reimbursementRouter.get('/', async (req : Request, res : Response) => {
     const reimbursements : Reimbursement[] = await getAllReimbursements();
