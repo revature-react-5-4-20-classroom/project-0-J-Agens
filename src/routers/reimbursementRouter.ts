@@ -5,7 +5,7 @@ import { authRoleFactory } from '../middleware/authMiddleware';
 
 export const reimbursementRouter : Router = express.Router();
 
-reimbursementRouter.use(authRoleFactory(['employee', 'finance manager', 'admin']));
+// reimbursementRouter.use(authRoleFactory(['employee', 'finance manager', 'admin']));
 
 reimbursementRouter.post('/', async (req : Request, res : Response) => {
     /*
@@ -53,6 +53,8 @@ reimbursementRouter.get('/author/userId/:authorId', async (req : Request, res : 
 })
 
 reimbursementRouter.patch('/', async (req : Request, res : Response) => {
+    console.log('route hit');
+    
     /*
     Input format: (only reimbursementId is required)
         {
@@ -92,6 +94,7 @@ reimbursementRouter.patch('/', async (req : Request, res : Response) => {
             status,
             type
         ));
+        
         res.status(200);
         res.json(remb);
     } else {
